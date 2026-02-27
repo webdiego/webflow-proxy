@@ -41,7 +41,7 @@ export async function GET(req: Request) {
 
     if (!res.ok) {
       return NextResponse.json(
-        { error: `Webflow API error: ${res.status}` },
+        { error: `Webflow API error: ${res.status} ${res.statusText}` },
         { status: res.status },
       );
     }
