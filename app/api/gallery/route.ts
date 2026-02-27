@@ -8,7 +8,7 @@ export async function GET() {
         headers: {
           Authorization: `Bearer ${process.env.WF_API_TOKEN}`,
         },
-        next: { revalidate: 60 }, // cache 60 sec
+        next: { revalidate: 60 },
       },
     );
 
@@ -18,15 +18,25 @@ export async function GET() {
 
     const data = await res.json();
 
-    // // 🔥 estrai tutte le immagini (multi-image field chiamato "gallery")
-    // const images = data.items.flatMap((item: any) =>
-    //   (item.fieldData.gallery || []).map((img: any) => img.url),
-    // );
-    // // 🔥 restituisci solo le URL delle immagini
-    // const uniqueImages = Array.from(new Set(images)); // rimuovi duplicati
-    console.log("Fetched gallery items:", data.items);
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    });
   } catch (err) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
+}
+
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
 }
